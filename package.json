@@ -1,0 +1,12 @@
+{
+  "name": "@kxfm/dot2svg",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "lightweight lib for transforming from DOT to SVG / part of KTS (Knowledge Transformation System)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Boran Gögetap",
+  "license": "AGPL-3.0-or-later"
+}
