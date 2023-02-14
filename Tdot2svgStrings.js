@@ -102,7 +102,10 @@ render( dot_string, elmId )
 	// weird HEIGHT HACK against the inflated height in form of an SVGAnimatedLength;
 	// found the scaling factor /4 * 3 by observation and experiment
 	// the goal is to set the SVG element to "100%" of the available height
-	document.querySelector( "svg").setAttribute("height", ( clientHeight / 4 * 3) + "pt") 
+	try
+	{
+		document.querySelector( "svg" ).setAttribute("height", ( clientHeight / 4 * 3) + "pt") 
+	} catch (e) { /* no SVG tag? */ }
  
 	on_svg_load();
 }
