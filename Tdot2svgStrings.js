@@ -73,8 +73,10 @@ build_diagram_from_string( dot_string, libPath )
 	}
 }
 
-render( dot_string, elmId )
+render( dot_string, elmSelector )
 {
+	let multiple_kts_diamgrams = document.querySelectorAll( ".ktscontainer" ).length > 1;
+
   	// see HEIGHT HACK below
   	let clientHeight = document.querySelector( "body" ).clientHeight;
 	let svgtag;
@@ -85,9 +87,10 @@ render( dot_string, elmId )
 		let kts_dot = KTS4Dot.preprocess(dot_string);
 		let unflat_dot = this.graphviz.unflatten( kts_dot, 5, true, 5);
 		let svgdoc = this.graphviz.dot(	unflat_dot,	"svg", {   images: imageAttributeArray } ) ;
-		svgtag = svgdoc
-		.slice( svgdoc.indexOf( "<svg" ) )
-		.replace( /svg width="\d+pt" /g, 'svg width="100%"' ); // height attribute does not support 100% and will set to default of 150px if missing: so we keep it
+		svgtag = svgdoc.slice( svgdoc.indexOf( "<svg" ) )
+
+		if( !multiple_kts_diamgrams )
+			svgtag = svgtag.replace( /svg width="\d+pt" /g, 'svg width="100%"' ); // height attribute does not support 100% and will set to default of 150px if missing: so we keep it
 
 	} catch (e)
 	{
@@ -97,15 +100,18 @@ render( dot_string, elmId )
 		svgtag = Tdot2svgStrings.simple_svg_from_error( e );
 	}
 
-	document.getElementById( elmId ).innerHTML = svgtag;
+	document.querySelector( elmSelector ).innerHTML = svgtag;
 
-	// weird HEIGHT HACK against the inflated height in form of an SVGAnimatedLength;
-	// found the scaling factor /4 * 3 by observation and experiment
-	// the goal is to set the SVG element to "100%" of the available height
-	try
+	if( ! multiple_kts_diamgrams )
 	{
-		document.querySelector( "svg" ).setAttribute("height", ( clientHeight / 4 * 3) + "pt") 
-	} catch (e) { /* no SVG tag? */ }
+		// weird HEIGHT HACK against the inflated height in form of an SVGAnimatedLength;
+		// found the scaling factor /4 * 3 by observation and experiment
+		// the goal is to set the SVG element to "100%" of the available height
+		try
+		{
+			document.querySelector( "svg" ).setAttribute("height", ( clientHeight / 4 * 3) + "pt") 
+		} catch (e) { /* no SVG tag? */ }
+	}
  
 	on_svg_load();
 }
